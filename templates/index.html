@@ -60,6 +60,12 @@
             font-weight: bold;
             color: #4a5568;
         }
+
+        .quirk {
+            font-style: italic;
+            color: #718096;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -90,10 +96,16 @@
             } else if (data.severity !== undefined) {
                 valueText = `<p class="value">Severity: ${data.severity} (rolled on ${data.dice_formula})</p>`;
             }
+
+            let quirkText = '';
+            if (data.quirk !== undefined) {
+                quirkText = `<p class="quirk">Quirk: ${data.quirk}</p>`;
+            }
             
             resultDiv.innerHTML = `
                 <h2>${data.name}</h2>
                 <p>${data.description}</p>
+                ${quirkText}
                 ${valueText}
             `;
         }

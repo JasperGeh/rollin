@@ -18,6 +18,12 @@ async def startup_event():
     # Load all tables on startup
     tables['artifacts'] = pd.read_csv("test_artifacts.csv")
     tables['mishaps'] = pd.read_csv("test_mishaps.csv")
+    tables['quirks'] = pd.read_csv("test_quirks.csv", header=0)
+    print(tables['quirks'])
+
+def roll_quirk():
+    """Roll for a random quirk from the quirks table"""
+    return tables['quirks'].sample(1).iloc[0]['quirk']
 
 @app.get("/")
 async def read_root(request: Request):
@@ -37,6 +43,10 @@ async def roll_on_table(table_name: str):
         "description": entry['description'],
     }
     
+    # For artifacts, also roll a quirk
+    if table_name == 'artifacts':
+        result['quirk'] = roll_quirk()
+    
     # Add rolled value if table has a dice column (either 'level' or 'severity')
     dice_column = 'level' if 'level' in entry else 'severity'
     if dice_column in entry:
@@ -44,5 +54,5 @@ async def roll_on_table(table_name: str):
         rolled_value = dice.roll(dice_formula)
         result[dice_column] = rolled_value
         result['dice_formula'] = dice_formula
-        
+    
     return result
