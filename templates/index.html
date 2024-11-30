@@ -1,0 +1,39 @@
+'''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TTRPG Table Roller</title>
+    <style>
+        .result {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>TTRPG Table Roller</h1>
+    
+    <button onclick="rollArtifact()">Roll Artifact</button>
+    
+    <div id="result" class="result">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        async function rollArtifact() {
+            const response = await fetch('/roll/artifact');
+            const data = await response.json();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <h2>${data.name}</h2>
+                <p>${data.description}</p>
+                <p>Level: ${data.level}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
+'''
