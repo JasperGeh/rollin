@@ -18,7 +18,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        h1 {
+        h1, h2 {
             color: #2d3748;
             margin-bottom: 20px;
         }
@@ -41,6 +41,19 @@
 
         button:hover {
             background: #2d3748;
+        }
+
+        button.small {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        button.add {
+            background: #48bb78;
+        }
+
+        button.remove {
+            background: #f56565;
         }
 
         .result {
@@ -66,6 +79,30 @@
             color: #718096;
             margin: 10px 0;
         }
+
+        .inventory {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .inventory-item {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .inventory-item h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -80,12 +117,25 @@
         <div id="result" class="result">
             <!-- Results will be displayed here -->
         </div>
+
+        <div class="inventory">
+            <h2>Party Inventory</h2>
+            <div id="inventory-list">
+                <!-- Inventory items will be displayed here -->
+            </div>
+        </div>
     </div>
 
     <script>
+        // Initialize by loading inventory
+        document.addEventListener('DOMContentLoaded', loadInventory);
+
+        let currentRoll = null;
+
         async function rollOnTable(tableName) {
             const response = await fetch(`/roll/${tableName}`);
             const data = await response.json();
+            currentRoll = data;  // Store the current roll
             
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
@@ -101,13 +151,65 @@
             if (data.quirk !== undefined) {
                 quirkText = `<p class="quirk">Quirk: ${data.quirk}</p>`;
             }
+
+            let addButton = '';
+            if (tableName === 'artifacts') {
+                addButton = '<button onclick="addToInventory()" class="add">Add to Inventory</button>';
+            }
             
             resultDiv.innerHTML = `
-                <h2>${data.name}</h2>
+                <div class="flex">
+                    <h2>${data.name}</h2>
+                    ${addButton}
+                </div>
                 <p>${data.description}</p>
                 ${quirkText}
                 ${valueText}
             `;
+        }
+
+        async function addToInventory() {
+            if (!currentRoll) return;
+            
+            const response = await fetch('/inventory/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(currentRoll)
+            });
+
+            if (response.ok) {
+                loadInventory();
+            }
+        }
+
+        async function removeFromInventory(index) {
+            const response = await fetch(`/inventory/remove/${index}`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                loadInventory();
+            }
+        }
+
+        async function loadInventory() {
+            const response = await fetch('/inventory');
+            const inventory = await response.json();
+            
+            const inventoryList = document.getElementById('inventory-list');
+            inventoryList.innerHTML = inventory.map((item, index) => `
+                <div class="inventory-item">
+                    <div class="flex">
+                        <h3>${item.name}</h3>
+                        <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
+                    </div>
+                    <p>${item.description}</p>
+                    ${item.quirk ? `<p class="quirk">Quirk: ${item.quirk}</p>` : ''}
+                    ${item.level ? `<p class="value">Level: ${item.level}</p>` : ''}
+                </div>
+            `).join('');
         }
     </script>
 </body>
