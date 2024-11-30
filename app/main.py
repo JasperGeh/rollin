@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-import random
+import pandas as pd
 from . import dice
-from . import database as db
 
 app = FastAPI()
 
@@ -12,24 +10,39 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/", response_class=HTMLResponse)
+# Global dictionary to store our tables
+tables = {}
+
+@app.on_event("startup")
+async def startup_event():
+    # Load all tables on startup
+    tables['artifacts'] = pd.read_csv("test_artifacts.csv")
+    tables['mishaps'] = pd.read_csv("test_mishaps.csv")
+
+@app.get("/")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/roll/artifact")
-async def roll_artifact():
-    # Example artifact roll
-    artifacts = [
-        {"name": "Blade of Dawn", "description": "A shimmering sword that glows at sunrise", "level_die": "1d10", "level_mod": 2},
-        {"name": "Frost Rune", "description": "Ancient rune crackling with winter's power", "level_die": "1d6", "level_mod": 1},
-        # Add more artifacts...
-    ]
+@app.get("/roll/{table_name}")
+async def roll_on_table(table_name: str):
+    if table_name not in tables:
+        return {"error": f"Table {table_name} not found"}
     
-    artifact = random.choice(artifacts)
-    rolled_level = dice.roll(artifact["level_die"]) + artifact["level_mod"]
+    # Select random entry from the specified table
+    entry = tables[table_name].sample(1).iloc[0]
     
-    return {
-        "name": artifact["name"],
-        "description": artifact["description"],
-        "level": rolled_level
+    # Prepare the result
+    result = {
+        "name": entry['name'],
+        "description": entry['description'],
     }
+    
+    # Add rolled value if table has a dice column (either 'level' or 'severity')
+    dice_column = 'level' if 'level' in entry else 'severity'
+    if dice_column in entry:
+        dice_formula = entry[dice_column]
+        rolled_value = dice.roll(dice_formula)
+        result[dice_column] = rolled_value
+        result['dice_formula'] = dice_formula
+        
+    return result

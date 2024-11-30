@@ -1,39 +1,102 @@
-'''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TTRPG Table Roller</title>
+    <title>Rollin - TTRPG Table Roller</title>
     <style>
-        .result {
-            margin: 20px;
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #2d3748;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .result h2 {
+            color: #2d3748;
+            margin-top: 0;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #4a5568;
         }
     </style>
 </head>
 <body>
-    <h1>TTRPG Table Roller</h1>
-    
-    <button onclick="rollArtifact()">Roll Artifact</button>
-    
-    <div id="result" class="result">
-        <!-- Results will be displayed here -->
+    <div class="container">
+        <h1>Rollin</h1>
+        
+        <div class="buttons">
+            <button onclick="rollOnTable('artifacts')">Roll Random Artifact</button>
+            <button onclick="rollOnTable('mishaps')">Roll Mishap</button>
+        </div>
+        
+        <div id="result" class="result">
+            <!-- Results will be displayed here -->
+        </div>
     </div>
 
     <script>
-        async function rollArtifact() {
-            const response = await fetch('/roll/artifact');
+        async function rollOnTable(tableName) {
+            const response = await fetch(`/roll/${tableName}`);
             const data = await response.json();
             
             const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            let valueText = '';
+            if (data.level !== undefined) {
+                valueText = `<p class="value">Level: ${data.level} (rolled on ${data.dice_formula})</p>`;
+            } else if (data.severity !== undefined) {
+                valueText = `<p class="value">Severity: ${data.severity} (rolled on ${data.dice_formula})</p>`;
+            }
+            
             resultDiv.innerHTML = `
                 <h2>${data.name}</h2>
                 <p>${data.description}</p>
-                <p>Level: ${data.level}</p>
+                ${valueText}
             `;
         }
     </script>
 </body>
 </html>
-'''
