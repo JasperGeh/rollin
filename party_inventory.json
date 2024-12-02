@@ -1,23 +1,16 @@
 [
   {
-    "name": "Moonweaver's Veil",
-    "description": "A cloak that shimmers with starlight and grants enhanced stealth in darkness",
-    "quirk": "Emits a low hum when active",
-    "level": 8,
-    "dice_formula": "1d6+2"
-  },
-  {
-    "name": "Thunderforge Hammer",
-    "description": "Ancient dwarven hammer that resonates with the sound of a distant storm",
+    "name": "Ring of Echo",
+    "description": "A silver ring that allows the wearer to perfectly mimic any sound heard",
     "quirk": "Tingles unpleasantly",
-    "level": 9,
-    "dice_formula": "1d12-1"
+    "level": 4,
+    "dice_formula": "1d4"
   },
   {
-    "name": "Shadow Walker Boots",
-    "description": "Boots that seem to absorb light and muffle footsteps",
-    "quirk": "Gets slowly hotter",
-    "level": 5,
-    "dice_formula": "1d10+1"
+    "name": "Ring of Echo",
+    "description": "A silver ring that allows the wearer to perfectly mimic any sound heard",
+    "quirk": "Tingles unpleasantly",
+    "level": 4,
+    "dice_formula": "1d4"
   }
 ]

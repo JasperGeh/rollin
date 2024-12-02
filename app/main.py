@@ -2,8 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import pandas as pd
-from . import dice
 import json
+import re
+import random
 from pathlib import Path
 
 app = FastAPI()
@@ -15,6 +16,26 @@ templates = Jinja2Templates(directory="templates")
 # Global dictionary to store our tables and inventory
 tables = {}
 INVENTORY_FILE = "party_inventory.json"
+
+def dice_roll(dice_str):
+    # If input is already a number, return it directly
+    if isinstance(dice_str, (int, float)):
+        return dice_str
+    """Roll dice in standard notation (e.g., '1d6', '2d10', '1d6+2', '2d10-1')"""
+    match = re.match(r'(\d+)d(\d+)([-+]\d+)?', dice_str)
+    if not match:
+        raise ValueError(f"Invalid dice notation: {dice_str}")
+    num_dice = int(match.group(1))
+    sides = int(match.group(2))
+    modifier = match.group(3)
+    results = [random.randint(1, sides) for _ in range(num_dice)]
+    roll_total = sum(results)
+    if modifier:
+        # Convert the modifier string (e.g. '+2' or '-1') to an integer
+        mod_value = int(modifier)
+        roll_total += mod_value
+    return roll_total
+    #return (roll_total, results, modifier)
 
 def load_inventory():
     """Load inventory from JSON file, create if doesn't exist"""
@@ -32,9 +53,10 @@ def save_inventory(inventory):
 @app.on_event("startup")
 async def startup_event():
     # Load all tables on startup
-    tables['artifacts'] = pd.read_csv("test_artifacts.csv")
-    tables['mishaps'] = pd.read_csv("test_mishaps.csv")
-    tables['quirks'] = pd.read_csv("test_quirks.csv")
+    tables['artifacts'] = pd.read_csv("tables/test_artifacts.csv")
+    tables['mishaps'] = pd.read_csv("tables/test_mishaps.csv")
+    tables['quirks'] = pd.read_csv("tables/test_quirks.csv")
+    tables['numenera_cypher'] = pd.read_csv("tables/numenera_cypher.csv")
     
     # Ensure inventory file exists
     if not Path(INVENTORY_FILE).exists():
@@ -71,7 +93,7 @@ async def roll_on_table(table_name: str):
     dice_column = 'level' if 'level' in entry else 'severity'
     if dice_column in entry:
         dice_formula = entry[dice_column]
-        rolled_value = dice.roll(dice_formula)
+        rolled_value = dice_roll(dice_formula)
         result[dice_column] = rolled_value
         result['dice_formula'] = dice_formula
     

@@ -23,6 +23,14 @@
             margin-bottom: 20px;
         }
 
+        .rollin {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+            vertical-align: middle;
+        }
+
         .buttons {
             display: flex;
             gap: 10px;
@@ -107,11 +115,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Rollin</h1>
         
         <div class="buttons">
-            <button onclick="rollOnTable('artifacts')">Roll Random Artifact</button>
-            <button onclick="rollOnTable('mishaps')">Roll Mishap</button>
+            <p class="rollin">Rollin</p>
+            <button onclick="rollOnTable('artifacts')">Artifact</button>
+            <button onclick="rollOnTable('mishaps')">Mishap</button>
+            <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
         </div>
         
         <div id="result" class="result">
@@ -140,11 +149,26 @@
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
             
+            let noText = "";
+            if (data.no !== undefined) {
+                noText = `${data.no}`;
+            }
+
+            let effectText = "";
+            if (data.effect !== undefined) {
+                effectText = `${data.effect}`;
+            }
+
+            let sourceText = "";
+            if (data.source !== undefined) {
+                sourceText = `${data.source}`;
+            }
+
             let valueText = '';
             if (data.level !== undefined) {
-                valueText = `<p class="value">Level: ${data.level} (rolled on ${data.dice_formula})</p>`;
+                valueText = `${data.level}`;
             } else if (data.severity !== undefined) {
-                valueText = `<p class="value">Severity: ${data.severity} (rolled on ${data.dice_formula})</p>`;
+                valueText = `${data.severity}`;
             }
 
             let quirkText = '';
@@ -154,17 +178,16 @@
 
             let addButton = '';
             if (tableName === 'artifacts') {
-                addButton = '<button onclick="addToInventory()" class="add">Add to Inventory</button>';
+                addButton = '<button onclick="addToInventory()" class="add">Add</button>';
             }
             
             resultDiv.innerHTML = `
                 <div class="flex">
-                    <h2>${data.name}</h2>
+                    <h2>${data.name} (${valueText})</h2>
                     ${addButton}
                 </div>
-                <p>${data.description}</p>
+                <p><b>Description:</b> ${data.description}</p>
                 ${quirkText}
-                ${valueText}
             `;
         }
 
@@ -202,12 +225,11 @@
             inventoryList.innerHTML = inventory.map((item, index) => `
                 <div class="inventory-item">
                     <div class="flex">
-                        <h3>${item.name}</h3>
+                        <h3>${item.name} (${item.level})</h3>
                         <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
                     </div>
-                    <p>${item.description}</p>
+                    <p>Description: ${item.description}</p>
                     ${item.quirk ? `<p class="quirk">Quirk: ${item.quirk}</p>` : ''}
-                    ${item.level ? `<p class="value">Level: ${item.level}</p>` : ''}
                 </div>
             `).join('');
         }
