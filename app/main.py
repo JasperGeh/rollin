@@ -56,9 +56,9 @@ def save_inventory(inventory):
 async def startup_event():
     # Load all tables on startup
     tables['artifacts'] = pd.read_csv("tables/test_artifacts.csv")
-    tables['mishaps'] = pd.read_csv("tables/test_mishaps.csv")
-    tables['quirks'] = pd.read_csv("tables/test_quirks.csv")
+    tables['numenera_artifact_quirks'] = pd.read_csv("tables/numenera_artifact_quirks.csv")
     tables['numenera_cypher'] = pd.read_csv("tables/numenera_cypher.csv")
+    tables['numenera_oddities'] = pd.read_csv("tables/numenera_oddities.csv")
     
     # Ensure inventory file exists
     if not Path(INVENTORY_FILE).exists():
@@ -66,7 +66,7 @@ async def startup_event():
 
 def roll_quirk():
     """Roll for a random quirk from the quirks table"""
-    return tables['quirks'].sample(1).iloc[0]['quirks']
+    return tables['numenera_artifact_quirks'].sample(1).iloc[0]['quirk']
 
 @app.get("/")
 async def read_root(request: Request):
@@ -84,9 +84,28 @@ async def roll_on_table(table_name: str):
     # Prepare the result
     if table_name == 'numenera_cypher':
         result = {
-            "no": str(entry['no']),
+            "no": "C-" + str(entry['no']),
             "name": entry['name'],
             "description": entry['description'],
+            "effect": entry['effect'],
+            "image": entry['image'],
+            "source": entry['source']
+        }
+    elif table_name == 'numenera_artifacts':
+        result = {
+            "no": "A-" + str(entry['no']),
+            "name": entry['name'],
+            "description": entry['description'],
+            "effect": entry['effect'],
+            "image": entry['image'],
+            "source": entry['source']
+        }
+    elif table_name == 'numenera_oddities':
+        result = {
+            "no": "O-" + str(entry['no']),
+            "name": "Oddity",
+            "description": entry['description'],
+            "source": entry['source']
         }
     else:
         result = {
@@ -96,10 +115,11 @@ async def roll_on_table(table_name: str):
     
     # For artifacts, also roll a quirk
     if table_name == 'artifacts':
-        result['quirk'] = roll_quirk()
+        if random.randint(1,6) == 1:
+            result['quirk'] = roll_quirk()
     
     # Add rolled value if table has a dice column (either 'level' or 'severity')
-    dice_column = 'level' if 'level' in entry else 'severity'
+    dice_column = 'level'
     if dice_column in entry:
         dice_formula = entry[dice_column]
         rolled_value = dice_roll(dice_formula)

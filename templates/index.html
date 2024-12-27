@@ -23,12 +23,8 @@
             margin-bottom: 20px;
         }
 
-        .description {
-            white-space: pre-wrap;
-        }
-
         .rollin {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             margin: 0;
             padding: 0;
@@ -120,18 +116,18 @@
 <body>
     <div class="container">
         
-        <div class="buttons">
-            <p class="rollin">Rollin</p>
+        <div class="buttons" style="display: flex; align-items: center; gap: 10px;">
+            <p class="rollin" style="margin: 0;">🎲 Rollin → </p>
             <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
             <button onclick="rollOnTable('artifacts')">Artifact</button>
-            <button onclick="rollOnTable('mishaps')">Mishap</button>
+            <button onclick="rollOnTable('numenera_oddities')">Oddity</button>
         </div>
         
         <div id="result" class="result">
             <!-- Results will be displayed here -->
         </div>
 
-        <div class="inventory">
+        <div id="inventory-section" class="inventory" style="display: none;">
             <h2>Party Inventory</h2>
             <div id="inventory-list">
                 <!-- Inventory items will be displayed here -->
@@ -155,26 +151,24 @@
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
             
-            let noText = "";
-            if (data.no !== undefined) {
-                noText = `${data.no}`;
-            }
-
-            let effectText = "";
-            if (data.effect !== undefined) {
-                effectText = `${data.effect}`;
-            }
-
-            let sourceText = "";
-            if (data.source !== undefined) {
-                sourceText = `${data.source}`;
-            }
-
-            let valueText = '';
+            let lvlText = '';
             if (data.level !== undefined) {
-                valueText = `${data.level}`;
-            } else if (data.severity !== undefined) {
-                valueText = `${data.severity}`;
+                lvlText = `(lvl ${data.level})`;
+            }
+
+            let noText = '';
+            if (data.no !== undefined) {
+                noText = `[<i>${data.no}</i>]`;
+            }
+
+            let descriptionText = '';
+            if (data.description !== undefined) {
+                descriptionText = `<p>${data.description}</p>`;
+            }
+
+            let effectText = '';
+            if (data.effect !== undefined) {
+                effectText = `<p>${data.effect}</p>`;
             }
 
             let quirkText = '';
@@ -182,19 +176,34 @@
                 quirkText = `<p class="quirk">Quirk: ${data.quirk}</p>`;
             }
 
+            let sourceText = '';
+            if (data.source !== undefined) {
+                sourceText = `<p style="text-align: right;"><i>${data.source}</i></p>`;
+            }
+
+            let imageText = '';
+            if (data.image !== undefined && data.image !== 'no') {
+                imageText = `<img src="${data.image}" alt="Image" style="width: 100px; height: auto;">`;
+            }
+
             let addButton = '';
-            const addableItems = ['numenera_cypher', 'artifacts'];
+            const addableItems = ['numenera_cypher', 'artifacts', 'numenera_oddities'];
             if (addableItems.includes(tableName)) {
                 addButton = '<button onclick="addToInventory()" class="add">Add</button>';
             }
             
             resultDiv.innerHTML = `
-                <div class="flex">
-                    <h2><i>[${data.no}]</i> ${data.name} (lvl ${valueText})</h2>
-                    ${addButton}
+                <div class="flex" style="align-items: center; justify-content: space-between;">
+                    <h2 style="margin: 0;">${noText} ${data.name} ${lvlText}</h2>
+                    <div class="flex" style="align-items: center; gap: 10px;">
+                        <p style="margin: 0;">${sourceText}</p>
+                        ${addButton}
+                    </div>
                 </div>
-                <p>${data.description}</p>
+                ${descriptionText}
+                ${effectText}
                 ${quirkText}
+                ${imageText}
             `;
         }
 
@@ -228,14 +237,26 @@
             const response = await fetch('/inventory');
             const inventory = await response.json();
             
+            const inventorySection = document.getElementById('inventory-section');
             const inventoryList = document.getElementById('inventory-list');
+            
+            if (inventory.length === 0) {
+                inventorySection.style.display = 'none';
+                return;
+            }
+            
+            inventorySection.style.display = 'block';
             inventoryList.innerHTML = inventory.map((item, index) => `
                 <div class="inventory-item">
-                    <div class="flex">
-                        <h3><i>[${item.no}]</i> ${item.name} (lvl ${item.level})</h3>
-                        <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
+                    <div class="flex" style="align-items: center;">
+                        <h3 style="margin: 0;">${item.no ? `[<i>${item.no}</i>] ` : ''}${item.name}${item.level ? ` (lvl ${item.level})` : ''}</h3>
+                        <div class="flex" style="align-items: center; gap: 10px;">
+                            ${item.source ? `<p style="margin: 0; text-align: right;"><i>${item.source}</i></p>` : ''}
+                            <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
+                        </div>
                     </div>
-                    <p class="description">${item.description}</p>
+                    ${item.description ? `<p>${item.description}</p>` : ''}
+                    ${item.effect ? `<p>${item.effect}</p>` : ''}
                     ${item.quirk ? `<p class="quirk">Quirk: ${item.quirk}</p>` : ''}
                 </div>
             `).join('');
