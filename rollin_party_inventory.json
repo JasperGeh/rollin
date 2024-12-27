@@ -1,0 +1,12 @@
+[
+  {
+    "no": "C-197",
+    "name": "Growth serum",
+    "description": "Internal: Liquid that is injected or swallowed",
+    "effect": "The user permanently grows a foot taller. This process is painful and takes 28 hours, during which time the affected character is impaired.",
+    "image": "no",
+    "source": "SATC",
+    "level": 3,
+    "dice_formula": "1d6"
+  }
+]

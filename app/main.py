@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Global dictionary to store our tables and inventory
 tables = {}
-INVENTORY_FILE = "party_inventory.json"
+INVENTORY_FILE = "rollin_party_inventory.json"
 
 def dice_roll(dice_str):
     # Try to convert input to integer first
@@ -59,7 +59,8 @@ async def startup_event():
     tables['numenera_artifact_quirks'] = pd.read_csv("tables/numenera_artifact_quirks.csv")
     tables['numenera_cypher'] = pd.read_csv("tables/numenera_cypher.csv")
     tables['numenera_oddities'] = pd.read_csv("tables/numenera_oddities.csv")
-    
+    tables['numenera_intrusions'] = pd.read_csv("tables/numenera_intrusions.csv")
+    tables['numenera_weird'] = pd.read_csv("tables/numenera_weird.csv")
     # Ensure inventory file exists
     if not Path(INVENTORY_FILE).exists():
         save_inventory([])
@@ -105,6 +106,20 @@ async def roll_on_table(table_name: str):
             "no": "O-" + str(entry['no']),
             "name": "Oddity",
             "description": entry['description'],
+            "source": entry['source']
+        }
+    elif table_name == 'numenera_intrusions':
+        result = {
+            #"no": "I-" + str(entry['no']),
+            "name": "Intrusion – " + entry['context'],
+            "description": entry['intrusion'],
+            #"context": entry['context'],
+            "source": entry['source']
+        }
+    elif table_name == 'numenera_weird':
+        result = {
+            "name": "Weird – " + entry['context'],
+            "description": entry['weird'],
             "source": entry['source']
         }
     else:

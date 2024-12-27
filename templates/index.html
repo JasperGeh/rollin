@@ -119,8 +119,10 @@
         <div class="buttons" style="display: flex; align-items: center; gap: 10px;">
             <p class="rollin" style="margin: 0;">🎲 Rollin → </p>
             <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
-            <button onclick="rollOnTable('artifacts')">Artifact</button>
             <button onclick="rollOnTable('numenera_oddities')">Oddity</button>
+            <button onclick="rollOnTable('numenera_intrusions')">Intrusion</button>
+            <button onclick="rollOnTable('numenera_weird')">Weird</button>
+            <button onclick="rollOnTable('artifacts')">Artifact (Test)</button>
         </div>
         
         <div id="result" class="result">
@@ -176,6 +178,16 @@
                 quirkText = `<p class="quirk">Quirk: ${data.quirk}</p>`;
             }
 
+            let contextText = '';
+            if (data.context !== undefined) {
+                contextText = `<p class="context">Context: ${data.context}</p>`;
+            }
+
+            let intrusionText = '';
+            if (data.intrusion !== undefined) {
+                intrusionText = `<p class="intrusion">Intrusion: ${data.intrusion}</p>`;
+            }
+
             let sourceText = '';
             if (data.source !== undefined) {
                 sourceText = `<p style="text-align: right;"><i>${data.source}</i></p>`;
@@ -204,6 +216,8 @@
                 ${effectText}
                 ${quirkText}
                 ${imageText}
+                ${contextText}
+                ${intrusionText}
             `;
         }
 
