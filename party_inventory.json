@@ -7,10 +7,31 @@
     "dice_formula": "1d4"
   },
   {
-    "name": "Ring of Echo",
-    "description": "A silver ring that allows the wearer to perfectly mimic any sound heard",
+    "name": "Tome of Forgotten Lore",
+    "description": "A book whose pages reveal different content to each reader",
     "quirk": "Tingles unpleasantly",
-    "level": 4,
-    "dice_formula": "1d4"
+    "level": 17,
+    "dice_formula": "1d20-2"
+  },
+  {
+    "no": "130",
+    "name": "Duplicator",
+    "description": "Usable: Synth cylinder etched with fine, glowing lines",
+    "level": 3,
+    "dice_formula": "1d6+1"
+  },
+  {
+    "no": "96",
+    "name": "Detonation (flesh warping)",
+    "description": "Usable: Explosive device or ceramic sphere (thrown, short range), handheld projector (long range)",
+    "level": 7,
+    "dice_formula": "1d6+3"
+  },
+  {
+    "no": "146",
+    "name": "Exalted vapor",
+    "description": "Internal: Electronic smoking implement<br>Wearable: Smoking mask",
+    "level": 6,
+    "dice_formula": "1d6"
   }
 ]

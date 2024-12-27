@@ -18,9 +18,11 @@ tables = {}
 INVENTORY_FILE = "party_inventory.json"
 
 def dice_roll(dice_str):
-    # If input is already a number, return it directly
-    if isinstance(dice_str, (int, float)):
-        return dice_str
+    # Try to convert input to integer first
+    try:
+        return int(dice_str)
+    except (ValueError, TypeError):
+        pass
     """Roll dice in standard notation (e.g., '1d6', '2d10', '1d6+2', '2d10-1')"""
     match = re.match(r'(\d+)d(\d+)([-+]\d+)?', dice_str)
     if not match:
@@ -80,10 +82,17 @@ async def roll_on_table(table_name: str):
     entry = tables[table_name].sample(1).iloc[0]
     
     # Prepare the result
-    result = {
-        "name": entry['name'],
-        "description": entry['description'],
-    }
+    if table_name == 'numenera_cypher':
+        result = {
+            "no": str(entry['no']),
+            "name": entry['name'],
+            "description": entry['description'],
+        }
+    else:
+        result = {
+            "name": entry['name'],
+            "description": entry['description'],
+        }
     
     # For artifacts, also roll a quirk
     if table_name == 'artifacts':

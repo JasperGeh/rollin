@@ -23,6 +23,10 @@
             margin-bottom: 20px;
         }
 
+        .description {
+            white-space: pre-wrap;
+        }
+
         .rollin {
             font-size: 24px;
             font-weight: bold;
@@ -118,9 +122,9 @@
         
         <div class="buttons">
             <p class="rollin">Rollin</p>
+            <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
             <button onclick="rollOnTable('artifacts')">Artifact</button>
             <button onclick="rollOnTable('mishaps')">Mishap</button>
-            <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
         </div>
         
         <div id="result" class="result">
@@ -145,6 +149,8 @@
             const response = await fetch(`/roll/${tableName}`);
             const data = await response.json();
             currentRoll = data;  // Store the current roll
+            // print data to console
+            console.log(data);
             
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
@@ -177,16 +183,17 @@
             }
 
             let addButton = '';
-            if (tableName === 'artifacts') {
+            const addableItems = ['numenera_cypher', 'artifacts'];
+            if (addableItems.includes(tableName)) {
                 addButton = '<button onclick="addToInventory()" class="add">Add</button>';
             }
             
             resultDiv.innerHTML = `
                 <div class="flex">
-                    <h2>${data.name} (${valueText})</h2>
+                    <h2><i>[${data.no}]</i> ${data.name} (lvl ${valueText})</h2>
                     ${addButton}
                 </div>
-                <p><b>Description:</b> ${data.description}</p>
+                <p>${data.description}</p>
                 ${quirkText}
             `;
         }
@@ -225,10 +232,10 @@
             inventoryList.innerHTML = inventory.map((item, index) => `
                 <div class="inventory-item">
                     <div class="flex">
-                        <h3>${item.name} (${item.level})</h3>
+                        <h3><i>[${item.no}]</i> ${item.name} (lvl ${item.level})</h3>
                         <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
                     </div>
-                    <p>Description: ${item.description}</p>
+                    <p class="description">${item.description}</p>
                     ${item.quirk ? `<p class="quirk">Quirk: ${item.quirk}</p>` : ''}
                 </div>
             `).join('');
