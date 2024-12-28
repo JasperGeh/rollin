@@ -83,9 +83,7 @@
         }
 
         .quirk {
-            font-style: italic;
-            color: #718096;
-            margin: 10px 0;
+            color: #6B0000;
         }
 
         .inventory {
@@ -119,12 +117,16 @@
         <div class="buttons" style="display: flex; align-items: center; gap: 10px;">
             <p class="rollin" style="margin: 0;">🎲 Rollin → </p>
             <button onclick="rollOnTable('numenera_cypher')">Cypher</button>
+            <button onclick="rollOnTable('numenera_artifacts')">Artifact</button>
             <button onclick="rollOnTable('numenera_oddities')">Oddity</button>
             <button onclick="rollOnTable('numenera_intrusions')">Intrusion</button>
             <button onclick="rollOnTable('numenera_weird')">Weird</button>
-            <button onclick="rollOnTable('artifacts')">Artifact (Test)</button>
         </div>
         
+        <div id="placeholder" class="result" style="display: block; color: #718096; text-align: center;">
+            <p>Rollin, an arbitrary TTRPG table roller. Click above to roll on a table!</p>
+        </div>
+
         <div id="result" class="result">
             <!-- Results will be displayed here -->
         </div>
@@ -151,7 +153,9 @@
             console.log(data);
             
             const resultDiv = document.getElementById('result');
+            const placeholderDiv = document.getElementById('placeholder');
             resultDiv.style.display = 'block';
+            placeholderDiv.style.display = 'none';
             
             let lvlText = '';
             if (data.level !== undefined) {
@@ -165,7 +169,7 @@
 
             let descriptionText = '';
             if (data.description !== undefined) {
-                descriptionText = `<p>${data.description}</p>`;
+                descriptionText = `<p><i>${data.description}</i></p>`;
             }
 
             let effectText = '';
@@ -188,6 +192,11 @@
                 intrusionText = `<p class="intrusion">Intrusion: ${data.intrusion}</p>`;
             }
 
+            let depletionText = '';
+            if (data.depletion !== undefined) {
+                depletionText = `<p class="depletion">Depletion: ${data.depletion}</p>`;
+            }
+
             let sourceText = '';
             if (data.source !== undefined) {
                 sourceText = `<p style="text-align: right;"><i>${data.source}</i></p>`;
@@ -199,7 +208,7 @@
             }
 
             let addButton = '';
-            const addableItems = ['numenera_cypher', 'artifacts', 'numenera_oddities'];
+            const addableItems = ['numenera_cypher', 'numenera_artifacts', 'numenera_oddities'];
             if (addableItems.includes(tableName)) {
                 addButton = '<button onclick="addToInventory()" class="add">Add</button>';
             }
@@ -218,6 +227,7 @@
                 ${imageText}
                 ${contextText}
                 ${intrusionText}
+                ${depletionText}
             `;
         }
 
@@ -269,9 +279,10 @@
                             <button onclick="removeFromInventory(${index})" class="small remove">Remove</button>
                         </div>
                     </div>
-                    ${item.description ? `<p>${item.description}</p>` : ''}
+                    ${item.description ? `<p><i>${item.description}</i></p>` : ''}
                     ${item.effect ? `<p>${item.effect}</p>` : ''}
                     ${item.quirk ? `<p class="quirk">Quirk: ${item.quirk}</p>` : ''}
+                    ${item.depletion ? `<p class="depletion">Depletion: ${item.depletion}</p>` : ''}
                 </div>
             `).join('');
         }

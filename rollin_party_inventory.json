@@ -1,12 +1,29 @@
 [
   {
-    "no": "C-197",
-    "name": "Growth serum",
-    "description": "Internal: Liquid that is injected or swallowed",
-    "effect": "The user permanently grows a foot taller. This process is painful and takes 28 hours, during which time the affected character is impaired.",
+    "no": "A-217",
+    "name": "Shatter Wand",
+    "description": "Broad, 8-inch (20 cm) synth stick with a single button",
+    "effect": "This weapon realigns the molecular structure of a living target, in effect crystalizing the flesh. It works at long range but has no visible manifestation (no ray or projectile). The device inflicts damage equal to its level. Further, if the target is slain by the device, the target shatters, exploding in an immediate radius with crystalline shrapnel that inflicts 3 points of damage. This device is a rapid-fire weapon, and thus can be used with the Spray or Arc Spray abilities that some characters have, but each \u201cround of ammo\u201d used or each additional target selected requires an additional depletion roll.",
+    "depletion": "1 in 1d20",
+    "source": "DISC",
+    "quirk": "Activated by sound (user must hum, whistle, sing, or speak in a specific way)",
+    "level": 10,
+    "dice_formula": "1d6+4"
+  },
+  {
+    "no": "C-25",
+    "name": "Biometric reference",
+    "description": "Internal: Pill, ingestible liquid<br>Wearable: Temporary tattoo, amulet, headband, crystal worn on temple<br>Usable: Small handheld device, crystal",
+    "effect": "Activating the device allows the user to connect with the datasphere to identify one creature he can see. The user learns the creature's level, motivations, health, damage inflicted, armor, and movement, plus a detail about how it fights in combat.",
     "image": "no",
     "source": "SATC",
-    "level": 3,
-    "dice_formula": "1d6"
+    "level": 1,
+    "dice_formula": "1"
+  },
+  {
+    "no": "O-215",
+    "name": "Oddity",
+    "description": "A black diamond that causes erotic dreams when it is placed under a sleeper's head",
+    "source": "SATC"
   }
 ]

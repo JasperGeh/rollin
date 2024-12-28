@@ -1,6 +1,7 @@
 # Ignore all files in the .venv directory
 .venv/*
 __pycache__
+tables/*
 numenera*
 
 .env

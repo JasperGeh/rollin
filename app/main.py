@@ -55,12 +55,13 @@ def save_inventory(inventory):
 @app.on_event("startup")
 async def startup_event():
     # Load all tables on startup
-    tables['artifacts'] = pd.read_csv("tables/test_artifacts.csv")
     tables['numenera_artifact_quirks'] = pd.read_csv("tables/numenera_artifact_quirks.csv")
     tables['numenera_cypher'] = pd.read_csv("tables/numenera_cypher.csv")
+    tables['numenera_artifacts'] = pd.read_csv("tables/numenera_artifacts.csv")
     tables['numenera_oddities'] = pd.read_csv("tables/numenera_oddities.csv")
     tables['numenera_intrusions'] = pd.read_csv("tables/numenera_intrusions.csv")
     tables['numenera_weird'] = pd.read_csv("tables/numenera_weird.csv")
+    
     # Ensure inventory file exists
     if not Path(INVENTORY_FILE).exists():
         save_inventory([])
@@ -98,7 +99,7 @@ async def roll_on_table(table_name: str):
             "name": entry['name'],
             "description": entry['description'],
             "effect": entry['effect'],
-            "image": entry['image'],
+            "depletion": entry['depletion'],
             "source": entry['source']
         }
     elif table_name == 'numenera_oddities':
@@ -112,7 +113,7 @@ async def roll_on_table(table_name: str):
         result = {
             #"no": "I-" + str(entry['no']),
             "name": "Intrusion – " + entry['context'],
-            "description": entry['intrusion'],
+            "effect": entry['intrusion'],
             #"context": entry['context'],
             "source": entry['source']
         }
@@ -129,7 +130,7 @@ async def roll_on_table(table_name: str):
         }
     
     # For artifacts, also roll a quirk
-    if table_name == 'artifacts':
+    if table_name == 'numenera_artifacts':
         if random.randint(1,6) == 1:
             result['quirk'] = roll_quirk()
     
