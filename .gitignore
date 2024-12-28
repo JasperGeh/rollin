@@ -3,6 +3,7 @@
 __pycache__
 tables/*
 numenera*
+rollin_party_inventory.json
 
 .env
 logs/

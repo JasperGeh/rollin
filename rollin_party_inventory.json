@@ -1,29 +1,29 @@
 [
   {
-    "no": "A-217",
-    "name": "Shatter Wand",
-    "description": "Broad, 8-inch (20 cm) synth stick with a single button",
-    "effect": "This weapon realigns the molecular structure of a living target, in effect crystalizing the flesh. It works at long range but has no visible manifestation (no ray or projectile). The device inflicts damage equal to its level. Further, if the target is slain by the device, the target shatters, exploding in an immediate radius with crystalline shrapnel that inflicts 3 points of damage. This device is a rapid-fire weapon, and thus can be used with the Spray or Arc Spray abilities that some characters have, but each \u201cround of ammo\u201d used or each additional target selected requires an additional depletion roll.",
-    "depletion": "1 in 1d20",
-    "source": "DISC",
-    "quirk": "Activated by sound (user must hum, whistle, sing, or speak in a specific way)",
-    "level": 10,
-    "dice_formula": "1d6+4"
-  },
-  {
-    "no": "C-25",
-    "name": "Biometric reference",
-    "description": "Internal: Pill, ingestible liquid<br>Wearable: Temporary tattoo, amulet, headband, crystal worn on temple<br>Usable: Small handheld device, crystal",
-    "effect": "Activating the device allows the user to connect with the datasphere to identify one creature he can see. The user learns the creature's level, motivations, health, damage inflicted, armor, and movement, plus a detail about how it fights in combat.",
+    "no": "C-5",
+    "name": "Airfins",
+    "description": "Wearable: Long gloves with forearm fins",
+    "effect": "Through gravity manipulation, the wearer can swim through the air as if it were water for one hour. Training or specialization in swimming aids in movement.",
     "image": "no",
     "source": "SATC",
     "level": 1,
-    "dice_formula": "1"
+    "dice_formula": "1d6"
   },
   {
-    "no": "O-215",
+    "no": "A-176",
+    "name": "Obedient Rope",
+    "description": "A 50-foot (15 m) length of thin metallic cable",
+    "effect": "This extremely useful, semi-intelligent cable obeys the verbal commands of the user. The cable can tie itself in knots and untie those knots. It can become sticky to adhere to surfaces (selectively\u2014parts of the cable can remain normal) or rigid (again, selectively). The rope cannot move of its own volition other than to tie or untie itself.",
+    "depletion": "1 in 1d100",
+    "source": "SATC",
+    "quirk": "Activated by sound (user must hum, whistle, sing, or speak in a specific way)",
+    "level": 1,
+    "dice_formula": "1d6"
+  },
+  {
+    "no": "O-81",
     "name": "Oddity",
-    "description": "A black diamond that causes erotic dreams when it is placed under a sleeper's head",
-    "source": "SATC"
+    "description": "Chair that can be stored in an extradimensional space when activated",
+    "source": "DISC"
   }
 ]
